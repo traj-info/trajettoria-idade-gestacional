@@ -106,8 +106,11 @@ class idade_gestacional {
 					
 					if (document.getElementById("chkRemember").checked == true) 
 						document.getElementById("dtUltimaMenstruacao").disabled = false;
-					else 
+					else {
 						document.getElementById("dtUltimaMenstruacao").disabled = true;
+						document.getElementById("dtUltimaMenstruacao").value = "";
+						
+					}
 				}
 		</script>
 		
@@ -155,19 +158,27 @@ class idade_gestacional {
 				if (trim(idade_gestacional::FilterData($_POST['dtUltrassom'])) != null) 												#Validando datas
 					idade_gestacional::ValidaData(idade_gestacional::FilterData($_POST['dtUltrassom']));
 		
-				if (trim(idade_gestacional::FilterData($_POST['idadeSemana'])) > 44) {													#Se o número de semanas informada for maior que 44, então exibir mensagem de erro
+				if (trim(idade_gestacional::FilterData($_POST['idadeSemana'])) > 44) 													#Se o número de semanas informada for maior que 44, então exibir mensagem de erro
 					echo "<div class='msgErro'><span>Dado incorreto (M&aacuteximo de 44 semanas)</span></div>";
-				}
 		
-				if (trim(idade_gestacional::FilterData($_POST['idadeDia'])) > 6) {														#Se o número de dias for maior que 6, então exibir mensagem de erro
+				if (trim(idade_gestacional::FilterData($_POST['idadeDia'])) > 6) 														#Se o número de dias for maior que 6, então exibir mensagem de erro
 					echo "<div class='msgErro'><span>Dado incorreto (M&aacuteximo de 6 dias)</span></div>";
-				}
 		
 				if (trim(idade_gestacional::FilterData($_POST['idadeDia'])) != NULL)													#Validação para campos apenas numéricos
 					idade_gestacional::validaNumeros($_POST['idadeDia']);
-		
+				
 				if (trim(idade_gestacional::FilterData($_POST['idadeSemana'])) != NULL)													#Validação para campos apenas numéricos
 					idade_gestacional::validaNumeros($_POST['idadeSemana']);
+				
+				if (trim(idade_gestacional::FilterData($_POST['dtUltrassom'])) != NULL) {
+					
+					if (trim(idade_gestacional::FilterData($_POST['idadeSemana'])) == NULL)												#Validação para campos apenas numéricos
+						echo "<div class='msgErro'><span>Campo semana deve ser preenchido!</span></div>";
+				
+					if (trim(idade_gestacional::FilterData($_POST['idadeDia'])) == NULL)												#Validação para campos apenas numéricos
+						echo "<div class='msgErro'><span>Campo dia deve ser preenchido!</span></div>";
+					
+				}
 				
 				if (trim(idade_gestacional::FilterData($_POST[$total_dias_dum])) > 315) 
 					echo "<div class='msgErro'><span>Quantidade de semanas da &Uacute;ltima menstrua&ccedil;&atilde;o n&atilde;o deve ser maior do que 45</span></div>";
@@ -175,7 +186,7 @@ class idade_gestacional {
 				if (trim(idade_gestacional::FilterData($_POST[$total_dias_usg])) > 315) 
 					echo "<div class='msgErro'><span>Quantidade de semanas do Ultrassom n&atilde;o deve ser maior do que 45</span></div>";
 				
-				if (($_POST[$dataUltrassom]) == NULL || ($_POST['idadeSemana']) == NULL || ($_POST['idadeDia']) == NULL) 
+				if (trim(idade_gestacional::FilterData($_POST['dtUltrassom'])) == NULL && trim(idade_gestacional::FilterData($_POST['dtUltimaMenstruacao'])) == NULL ) 
 					echo "<div class='msgErro'><span>Dados devem ser preenchidos!</span></div>";
 
 			if( $is_widget )
@@ -183,7 +194,6 @@ class idade_gestacional {
 			
 			$dataMenstruacao = trim(idade_gestacional::FilterData($_POST['dtUltimaMenstruacao']));
 			$dataUltrassom = trim(idade_gestacional::FilterData($_POST['dtUltrassom']));
-			
 				
 				echo "<hr>";
 				
@@ -205,7 +215,7 @@ class idade_gestacional {
 					$calculo = ($semanas_ig_ultrassom * 7) + $dias_ig_ultrassom ;							#Obtém as semanas de IG do ultrassom e multiplica por 7 para descobrir os dias, e adiciona mais os dias que foram informados (De acordo com a IG do primeiro ultrassom)
 					$total_dias_usg = $calculo + $dias_usg;
 					
-					if ($total_dias_usg < 315 && $total_dias_usg > 0) {
+					if ($total_dias_usg < 315 && $total_dias_usg > 0 && trim(idade_gestacional::FilterData($_POST['idadeSemana'])) != NULL && trim(idade_gestacional::FilterData($_POST['idadeDia'])) != NULL ) {
 						$format = str_replace("/", "-", $dataUltrassom);									#Calculando a data provável do parto, de maneira que se obtém as datas digitadas,
 						$newformat = date("Y-m-d", strtotime($format));										#e elas são formatadas para timestamp e calcula-se o dia do parto
 						$idadePrimeiroUltrassom = strtotime("-".$calculo." days");
@@ -245,7 +255,7 @@ class idade_gestacional {
 						}
 					}
 					
-					else if (isset($_POST['chkRemember']) == NULL && $_POST['chkRemember'] == "") {															#Se ela não se lembra da DUM
+					else if (isset($_POST['chkRemember']) == NULL && $_POST['chkRemember'] == "" && trim(idade_gestacional::FilterData($_POST['idadeSemana'])) != NULL && trim(idade_gestacional::FilterData($_POST['idadeDia'])) != NULL ) {															#Se ela não se lembra da DUM
 						
 						if (trim(idade_gestacional::FilterData($_POST['dtUltrassom'])) != NULL ) 	{
 							if ($total_dias_usg < 315)  {
