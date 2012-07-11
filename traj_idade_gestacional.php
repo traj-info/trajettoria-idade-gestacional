@@ -104,14 +104,33 @@ class idade_gestacional {
 		<script type="text/javascript">																	
 				function desabilita() {
 					
-					if (document.getElementById("chkRemember").checked = true) 
+					if (document.getElementById("chkRemember").checked == true) 
 						document.getElementById("dtUltimaMenstruacao").disabled = false;
 					else 
 						document.getElementById("dtUltimaMenstruacao").disabled = true;
 				}
 		</script>
 		
-		  
+		<form id="frmCalculo" name="frmCalculo" method="post" action="">
+			
+			<div class="remember_check"><label for="chkRemember">Recorda-se com exatid&atilde;o da data de sua &uacute;ltima menstrua&ccedil;&atilde;o ? </label>
+			<input type="checkbox" name="chkRemember" id="chkRemember" onclick="desabilita()" /></div>
+			
+			<div class="ultimaMenst_input"><label for="dtUltimaMenstruacao">Informe a data da sua &uacute;ltima menstrua&ccedil;&atilde;o  (DD/MM/AAAA)</label>
+			<input type="text" disabled="true" name="dtUltimaMenstruacao" maxlength="10" id="dtUltimaMenstruacao" class="datepicker" value="<?php echo trim(idade_gestacional::FilterData($_POST['dtUltimaMenstruacao'])); ?>" /></div>
+			
+			
+			<div class="primeiroUltra_input"><label for="dtUltrassom">Informe a data em que foi realizado o primeiro ultrassom  (DD/MM/AAAA)</label>
+			<input type="text" name="dtUltrassom" id="dtUltrassom" maxlength="10" class="datepicker" value="<?php echo trim(idade_gestacional::FilterData($_POST['dtUltrassom'])); ?>"/></div>
+			
+			<div class="idadeUltra_input"><label>Informe a idade gestacional estimada do primeiro ultrassom </label>
+			<input type="text" name="idadeSemana" id="idadeSemana" size="2" maxlength="2" value="<?php echo trim(idade_gestacional::FilterData($_POST['idadeSemana'])); ?>" /><label>semanas</label>
+			<input type="text" name="idadeDia" id="idadeDia" size="2" maxlength="1" value="<?php echo trim(idade_gestacional::FilterData($_POST['idadeDia'])); ?>" /><label>dias</label></div>
+			
+			<input type="submit" value="Calcular" name="submit" id="submit" />
+			
+		</form> 
+		
 			<?php 
 			if(isset($_POST['submit'])) {
 			
@@ -155,42 +174,16 @@ class idade_gestacional {
 				
 				if (trim(idade_gestacional::FilterData($_POST[$total_dias_usg])) > 315) 
 					echo "<div class='msgErro'><span>Quantidade de semanas do Ultrassom n&atilde;o deve ser maior do que 45</span></div>";
-			}
-			?>
-			
-			<form id="frmCalculo" name="frmCalculo" method="post" action="">
-			
-			<div class="remember_check"><label for="chkRemember">Recorda-se com exatid&atilde;o da data de sua &uacute;ltima menstrua&ccedil;&atilde;o ? </label>
-			<input type="checkbox" name="chkRemember" id="chkRemember" onclick="desabilita()" /></div>
-			
-			<div class="ultimaMenst_input"><label for="dtUltimaMenstruacao">Informe a data da sua &uacute;ltima menstrua&ccedil;&atilde;o  (DD/MM/AAAA)</label>
-			<input type="text" disabled="true" name="dtUltimaMenstruacao" maxlength="10" id="dtUltimaMenstruacao" class="datepicker" value="<?php echo trim(idade_gestacional::FilterData($_POST['dtUltimaMenstruacao'])); ?>" /></div>
-			
-			
-			<div class="primeiroUltra_input"><label for="dtUltrassom">Informe a data em que foi realizado o primeiro ultrassom  (DD/MM/AAAA)</label>
-			<input type="text" name="dtUltrassom" id="dtUltrassom" maxlength="10" class="datepicker" value="<?php echo trim(idade_gestacional::FilterData($_POST['dtUltrassom'])); ?>"/></div>
-			
-			<div class="idadeUltra_input"><label>Informe a idade gestacional estimada do primeiro ultrassom </label>
-			<input type="text" name="idadeSemana" id="idadeSemana" size="2" maxlength="2" value="<?php echo trim(idade_gestacional::FilterData($_POST['idadeSemana'])); ?>" /><label>semanas</label>
-			<input type="text" name="idadeDia" id="idadeDia" size="2" maxlength="1" value="<?php echo trim(idade_gestacional::FilterData($_POST['idadeDia'])); ?>" /><label>dias</label></div>
-			
-			<input type="submit" value="Calcular" name="submit" id="submit" />
-			
-			</form> 
-			<?php 
-			
-			if( $is_widget ){
+				
+				if (($_POST[$dataUltrassom]) == NULL || ($_POST['idadeSemana']) == NULL || ($_POST['idadeDia']) == NULL) 
+					echo "<div class='msgErro'><span>Dados devem ser preenchidos!</span></div>";
+
+			if( $is_widget )
 				echo $after_widget;
-			}
 			
 			$dataMenstruacao = trim(idade_gestacional::FilterData($_POST['dtUltimaMenstruacao']));
 			$dataUltrassom = trim(idade_gestacional::FilterData($_POST['dtUltrassom']));
 			
-			if (isset($_POST['submit']) && $dataMenstruacao == NULL && $dataUltrassom == NULL && ($_POST['idadeSemana']) == NULL && ($_POST['idadeDia']) == NULL ) {
-				echo "<div class='msgErro'><span>Dados devem ser preenchidos!</span></div>";	
-			}
-			
-			else {
 				
 				echo "<hr>";
 				
@@ -271,7 +264,7 @@ class idade_gestacional {
 }
 register_activation_hook(__FILE__,array('idade_gestacional','Install'));
 add_filter('init', array('idade_gestacional','Initialize'));
-add_shortcode("traj-idade-gestacional", array('idade_gestacional','calc_handler'));				#registrando "traj-idade-gestacional" como shortcode no wordpress.
+add_shortcode("traj-idade-gestacional", array('idade_gestacional','calc_handler'));		
 
 add_action( 'init', 'wpapi_date_picker' );
 function wpapi_date_picker() {
