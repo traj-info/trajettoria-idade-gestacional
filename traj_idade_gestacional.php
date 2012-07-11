@@ -111,8 +111,7 @@ class idade_gestacional {
 				}
 		</script>
 		
-		
-		
+		  
 			<?php 
 			if(isset($_POST['submit'])) {
 			
