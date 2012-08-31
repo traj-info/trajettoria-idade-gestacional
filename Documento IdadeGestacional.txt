@@ -1,0 +1,15 @@
+Estágio de Desenvolvimento Plugin Trajettoria - Cálculo de Idade Gestacional  31/08/2012
+
+Pendências:
+	- Validações de Campo (JQuery/PHP)
+	
+O que foi feito:
+	- Cálculo da idade gestacional da mulher
+	- Implementado JQuery datepicker
+	- Algumas validações serverside(PHP)
+	- Validação de data
+	- Cálculo baseado no Ultrassom
+	- Cálculo baseado na última menstruação
+	- Cálculo para converter dias em Semanas/Dias
+	- Validação de números
+	- Validação JS para checkbox marcada (Ativar/Desativar)
