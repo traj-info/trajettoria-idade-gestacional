@@ -2,6 +2,7 @@ Estágio de Desenvolvimento Plugin Trajettoria - Cálculo de Idade Gestacional  31
 
 Pendências:
 	- Validações de Campo (JQuery/PHP)
+	- Estilizar mensagens de erro(CSS)
 	
 O que foi feito:
 	- Cálculo da idade gestacional da mulher
