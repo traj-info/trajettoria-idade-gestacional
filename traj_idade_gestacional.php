@@ -95,7 +95,7 @@ class idade_gestacional {
 	}
 	
 	public static function calc_idade_gestacional() {																		#função principal do plugin, onde será feita toda a lógica do mesmo.
-	
+		
 		if( $is_widget )
 		echo $before_widget . $before_title . $after_title;
 	
